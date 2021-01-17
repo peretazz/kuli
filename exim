@@ -1,0 +1,111 @@
+Exim 
+
+melihat account yang antriannya banyak
+# exim -bp | awk -F " " '{print $4}' | sort | uniq -c | sort -n
+Lihat info jumlah email frozen
+# exim -bp | grep -c frozen
+Hapus email frozen
+# exim -bpr | grep frozen | awk {'print $3'} | xargs exim -Mrm
+Hapus email bounce 
+# exim -bpr | grep "<>" | awk {'print $3'} | xargs exim -Mrm
+Lihat jumlah email queue
+# exim -bpc
+ exim -bpr | grep cpanel | awk {'print $3'} | xargs exim -Mrm
+
+ less /var/log/exim_mainlog
+
+
+ exiqgrep -i -f "" | xargs exim -Mrm (frozen)
+ exiqgrep -if asuransiaxaonline@gmail.com | xargs exim -Mrm
+
+mitigasi exim 
+
+misal issue :
+039T To: asuransiterbaikindonesia@gmail.com
+162  Subject: =?utf-8?B?QXN1cmFuc2kgSG90ZWwgVGVyYmFpayAmIFRlcm11cmFoIElu?=  =?utf-8?B?ZG9uZXNpYSBEaXNrb246IOS8mOaDoOmmluWPkSDml6DmtYHmsLQg5Y+v5o+Q?=  =?utf-8?B?5qy+?=
+063  X-PHP-Script: www.asuransihotel.com/index.php for 36.6.243.144
+051  X-PHP-Originating-Script: 1069:class.phpmailer.php
+038  Date: Fri, 12 Jun 2020 07:59:03 +0000
+cara cek :
+#find /home/k0805373/public_html/ -type f -iname "class.phpmailer.php"
+#chmod 200 /home/k0805373/public_html/libraries/vendor/phpmailer/phpmailer/class.phpmailer.php
+#exiqgrep -if asuransiaxaonline@gmail.com | xargs exim -Mrm
+#/scripts/restartsrv_exim
+
+- cari dimana lokasi file phpmailer nya 
+  #find /home/k0805373/public_html/ -type f -iname "class.phpmailer.php"
+- take off permission nya
+  #chmod 200 /home/k0805373/public_html/libraries/vendor/phpmailer/phpmailer/class.phpmailer.php
+- hapus emailnya dari queue
+  #exiqgrep -if asuransiaxaonline@gmail.com | xargs exim -Mrm
+user cpanel sama nama file script nya bisa di lihat di header
+9:09
+contoh
+[root@limas ~]# exim -Mvh 1jmKQY-0006eI-O8
+1jmKQY-0006eI-O8-H
+k2474145 1881 993
+<k2474145@limas.maintenis.com>
+1592586222 0
+-received_time_usec .748364
+-ident k2474145
+-received_protocol local
+-body_linecount 11
+-max_received_linelength 87
+-auth_id k2474145
+-auth_sender k2474145@limas.maintenis.com
+-allow_unqualified_recipient
+-allow_unqualified_sender
+-local
+YY info@bordir18.com/dovecot_virtual_delivery
+NN erunugriyanto@gmail.com
+NN info@bordir18.com/virtual_aliases_nostar
+1
+info@bordir18.com
+195P Received: from k2474145 by limas.maintenis.com with local (Exim 4.93)
+        (envelope-from <k2474145@limas.maintenis.com>)
+        id 1jmKQY-0006eI-O8
+        for info@bordir18.com; Sat, 20 Jun 2020 01:03:42 +0800
+022T To: info@bordir18.com
+040  Subject: www.bordir18.com "trump china"
+059  X-PHP-Script: www.bordir18.com/index.php for 96.44.183.149
+051  X-PHP-Originating-Script: 1881:class-phpmailer.php
+038  Date: Fri, 19 Jun 2020 17:03:42 +0000
+035F From: JamesTap <info@bordir18.com>
+038R Reply-To: temptest294376303@gmail.com
+064I Message-ID: <8db0056fd607936f232bd560d9a28880@www.bordir18.com>
+068  X-Mailer: PHPMailer 5.2.22 (https://github.com/PHPMailer/PHPMailer)
+018  MIME-Version: 1.0
+040  Content-Type: text/plain; charset=UTF-8
+
+grep cwd /var/log/exim_mainlog | grep -v /var/spool | awk -F"cwd=" '{print $2}' | awk '{print $1}' | sort | uniq -c | sort -n
+spanel mail
+# /c/sbin/delete-mail-in-qmail-queue.pl --contains simpatindo.com <delete_spam mail>
+
+qmail-queue
+klo dari to nya sih itu spam
+7:51
+sebenernya klo mau yakin liat headernya dulu
+7:51
+cara liat headernya
+7:51
+liat queuenya
+7:52
+qmail-qread | grep email_pengirim
+7:52
+abis itu liat headernya
+7:52
+less /var/qmail/queue/mess/*/id_email
+7:52
+id_email liat hasil dari qmail-qread
+
+grep dovecot_ /var/log/exim_mainlog | awk '{print $11}'| sort | uniq -c | sort -n | tail -10
+ 
+ kalo pake script 
+ 
+ less /var/log/exim_mainlog | grep zando@ganteng.com
+ 
+ qmail 
+ /var/qmail/queue/mess/*/idemail
+ 
+ 
+ exigrep sas@sasdxb.com /var/log/exim_mainlog*
